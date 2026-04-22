@@ -2,7 +2,7 @@
 
 @theme inline {
   /* Colors */
-  --color-canvas: #FAF9F8;
+  --color-canvas: #F2F0EB;
   --color-ink: #0A0A0A;
   --color-ink-muted: #1C1C1C;
   --color-gray-900: #2B2B2B;
@@ -21,7 +21,7 @@ html {
 }
 
 body {
-  background-color: #FAF9F8;
+  background-color: #EEEDED;
   color: #0A0A0A;
 }
 
@@ -55,65 +55,78 @@ body {
 
 
 @layer utilities {
+
   /* ─── Display scale — fluid via clamp() ─────────── */
   .display-2xl {
     font-size: clamp(80px, 15vw, 180px);
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
+
   .display-xl {
     font-size: clamp(64px, 12vw, 140px);
     line-height: 0.9;
     letter-spacing: -0.035em;
   }
+
   .display-lg {
     font-size: clamp(44px, 9vw, 96px);
     line-height: 0.92;
     letter-spacing: -0.03em;
   }
+
   .display-md {
     font-size: clamp(36px, 6.5vw, 64px);
     line-height: 1.0625;
     letter-spacing: -0.025em;
   }
+
   /* ─── Heading scale ─────────────────────────────── */
   .heading-lg {
     font-size: clamp(26px, 4vw, 36px);
     line-height: 1.22;
     letter-spacing: -0.01em;
   }
+
   .heading-md {
     font-size: 26px;
     line-height: 34px;
     letter-spacing: -0.01em;
   }
+
   .heading-sm {
     font-size: 18px;
     line-height: 26px;
     letter-spacing: 0;
   }
+
   /* ─── Body scale ────────────────────────────────── */
   .body-lg {
     font-size: 17px;
     line-height: 28px;
   }
+
   .body-md {
     font-size: 15px;
     line-height: 24px;
   }
+
   .body-sm {
     font-size: 13px;
     line-height: 20px;
   }
+
   .caption {
     font-size: 11px;
     line-height: 16px;
     letter-spacing: 0.08em;
   }
+
   /* ─── Scrollbar ─────────────────────────────────── */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
