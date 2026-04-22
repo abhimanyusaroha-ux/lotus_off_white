@@ -67,46 +67,77 @@ export function Portfolio() {
         const slideTextGroups = slideTextGroupRefs.current.filter(Boolean) as HTMLDivElement[];
         const n = properties.length;
 
-        // ── Initial states ───────────────────────────────────────────
+        // ── Initial states ─────────────────────────────────────────
         gsap.set(slideImgs[0], { clipPath: "inset(0 0% 0 0)" });
         gsap.set(slideImgs.slice(1), { clipPath: "inset(0 0 0 100%)" });
 
-        const slide0Items = slideTextGroups[0]
-          ? Array.from(slideTextGroups[0].querySelectorAll<HTMLElement>(".s-text"))
-          : [];
-        gsap.set(slide0Items, { yPercent: 0, opacity: 1 });
+        // Slide 0: text fully visible
+        const slide0Reveals = slideTextGroups[0]?.querySelectorAll<HTMLElement>(".s-reveal") ?? [];
+        const slide0Fades = slideTextGroups[0]?.querySelectorAll<HTMLElement>(".s-fade") ?? [];
+        gsap.set(Array.from(slide0Reveals), { yPercent: 0, opacity: 1 });
+        gsap.set(Array.from(slide0Fades), { opacity: 1 });
 
+        // Slides 1–3: text hidden
         slideTextGroups.slice(1).forEach((group) => {
-          const items = Array.from(group.querySelectorAll<HTMLElement>(".s-text"));
-          gsap.set(items, { yPercent: 100, opacity: 0 });
+          gsap.set(Array.from(group.querySelectorAll<HTMLElement>(".s-reveal")), {
+            yPercent: 110, opacity: 0,
+          });
+          gsap.set(Array.from(group.querySelectorAll<HTMLElement>(".s-fade")), {
+            opacity: 0,
+          });
         });
 
-        // ── Build timeline ───────────────────────────────────────────
-        // Timeline duration = 3 (one unit per transition between 4 slides).
-        // Scroll distance mapped = section height (500vh) − viewport (100vh) = 400vh.
-        // Each snap point: 0, 1/3, 2/3, 1.
+        // ── Text helpers — run at fixed speed, decoupled from scroll ──
+        let activeSlide = 0;
+
+        const textExit = (idx: number) => {
+          const group = slideTextGroups[idx];
+          if (!group) return;
+          gsap.to(Array.from(group.querySelectorAll<HTMLElement>(".s-reveal, .s-fade")), {
+            opacity: 0,
+            y: -14,
+            duration: 0.22,
+            ease: "power3.in",
+            overwrite: true,
+          });
+        };
+
+        const textEnter = (idx: number) => {
+          const group = slideTextGroups[idx];
+          if (!group) return;
+          const reveals = Array.from(group.querySelectorAll<HTMLElement>(".s-reveal"));
+          const fades = Array.from(group.querySelectorAll<HTMLElement>(".s-fade"));
+          gsap.set(reveals, { yPercent: 110, opacity: 0, y: 0 });
+          gsap.set(fades, { opacity: 0, y: 0 });
+          gsap.to(reveals, { yPercent: 0, opacity: 1, stagger: 0.08, duration: 0.9, ease: "expo.out", overwrite: true });
+          gsap.to(fades, { opacity: 1, duration: 0.5, delay: 0.3, ease: "power2.out", overwrite: true });
+        };
+
+        // ── Scrub timeline: scroll directly controls the curtain position ──
+        // ease: "none" on both tweens keeps outgoing right-edge and incoming
+        // left-edge at the same x coordinate throughout the transition.
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sliderSectionRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 1.2,
+            scrub: 1,
             snap: {
               snapTo: [0, 1 / 3, 2 / 3, 1],
-              duration: { min: 0.3, max: 0.6 },
-              ease: "power2.inOut",
+              duration: { min: 0.5, max: 0.9 },
+              ease: "power3.inOut",
             },
             onUpdate(self) {
-              // rawSlide: 0 at slide 1, 3 at slide 4
               const rawSlide = self.progress * (n - 1);
-
-              // Counter
-              if (counterRef.current) {
-                const display = Math.min(Math.floor(rawSlide) + 1, n);
-                counterRef.current.textContent = String(display).padStart(2, "0");
+              const nearest = Math.min(Math.round(rawSlide), n - 1);
+              if (nearest !== activeSlide) {
+                textExit(activeSlide);
+                textEnter(nearest);
+                activeSlide = nearest;
               }
-
-              // Progress segments: each segment's fill = clamp(rawSlide − i, 0, 1)
+              if (counterRef.current) {
+                counterRef.current.textContent = String(nearest + 1).padStart(2, "0");
+              }
               progressFillRefs.current.forEach((fill, i) => {
                 if (!fill) return;
                 fill.style.width = `${Math.max(0, Math.min(1, rawSlide - i)) * 100}%`;
@@ -116,51 +147,27 @@ export function Portfolio() {
         });
 
         for (let i = 0; i < n - 1; i++) {
-          const t = i; // start time of this transition in the timeline
-
-          // Image: slide i collapses from the right side (inset right grows)
+          // Outgoing: right edge collapses leftward (right inset 0% → 100%)
           tl.to(
             slideImgs[i],
-            { clipPath: "inset(0 100% 0 0)", duration: 0.85, ease: "expo.inOut" },
-            t
+            { clipPath: "inset(0 100% 0 0)", duration: 1, ease: "none" },
+            i
           );
-
-          // Image: slide i+1 reveals from the right (inset left shrinks)
+          // Incoming: left edge opens rightward (left inset 100% → 0%)
+          // Shared boundary: both edges travel at identical speed — no gap, no overlap
           tl.fromTo(
             slideImgs[i + 1],
             { clipPath: "inset(0 0 0 100%)" },
-            { clipPath: "inset(0 0% 0 0)", duration: 0.85, ease: "expo.inOut" },
-            t + 0.15 // slight offset so incoming trails outgoing
+            { clipPath: "inset(0 0% 0 0)", duration: 1, ease: "none" },
+            i
           );
-
-          // Text: slide i exits upward, staggered (ends by t+0.49)
-          const outItems = Array.from(
-            slideTextGroups[i]?.querySelectorAll<HTMLElement>(".s-text") ?? []
-          );
-          outItems.forEach((el, j) => {
-            tl.to(
-              el,
-              { yPercent: -60, opacity: 0, duration: 0.4, ease: "power3.in" },
-              t + j * 0.03
-            );
-          });
-
-          // Text: slide i+1 enters from below, staggered (ends by t+0.94)
-          const inItems = Array.from(
-            slideTextGroups[i + 1]?.querySelectorAll<HTMLElement>(".s-text") ?? []
-          );
-          inItems.forEach((el, j) => {
-            tl.fromTo(
-              el,
-              { yPercent: 100, opacity: 0 },
-              { yPercent: 0, opacity: 1, duration: 0.6, ease: "expo.out" },
-              t + 0.25 + j * 0.03
-            );
-          });
         }
 
         return () => {
           tl.kill();
+          slideTextGroups.forEach((group) => {
+            gsap.killTweensOf(Array.from(group.querySelectorAll<HTMLElement>(".s-reveal, .s-fade")));
+          });
         };
       }
     );
@@ -170,7 +177,7 @@ export function Portfolio() {
 
   return (
     <section id="portfolio">
-      {/* ── Intro — normal flow ──────────────────────────────────────── */}
+      {/* ── Intro — normal flow ─────────────────────────────────────── */}
       <div className="pt-[160px] max-[640px]:pt-24 pb-14 max-[640px]:pb-10 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6">
         <SectionMarker number="02" label="Select Portfolio" />
         <div className="mt-8">
@@ -180,22 +187,26 @@ export function Portfolio() {
             stagger={0.08}
             duration={1.0}
           >
-            Four completions. Five more underway.
+            The portfolio.
+            <span style={{ fontStyle: "italic", display: "block" }}>
+              Each acquisition deliberate.
+            </span>
           </LineReveal>
         </div>
       </div>
 
-      {/* ── Desktop pinned slider (hidden on mobile / reduced-motion) ── */}
+      {/* ── Desktop pinned slider ────────────────────────────────────── */}
       <div
         ref={sliderSectionRef}
         className="hidden lg:block relative"
         style={{ height: "500vh" }}
       >
         <div className="sticky top-0 h-screen overflow-hidden bg-canvas">
-          {/* Slides — all absolutely stacked; clip-path controls visibility */}
+          {/* All 4 slides stacked absolutely; clip-path controls which is visible */}
           {properties.map((property, i) => (
             <div key={property.id} className="absolute inset-0 grid grid-cols-2">
-              {/* Left column: full-bleed image, clip-path animated */}
+
+              {/* Left: full-bleed image, clip-path animated by standalone GSAP tweens */}
               <div
                 ref={(el) => { slideImgRefs.current[i] = el; }}
                 className="relative h-full overflow-hidden"
@@ -210,16 +221,16 @@ export function Portfolio() {
                 />
               </div>
 
-              {/* Right column: text content, vertically centered */}
+              {/* Right: text, animated independently at LineReveal speed */}
               <div className="flex items-center px-[80px] h-full overflow-hidden">
                 <div
                   ref={(el) => { slideTextGroupRefs.current[i] = el; }}
                   className="w-full max-w-[520px]"
                 >
-                  {/* Property name */}
+                  {/* Property name — mask reveal */}
                   <div className="overflow-hidden">
                     <h3
-                      className="s-text font-sans font-bold text-ink"
+                      className="s-reveal font-sans font-bold text-ink"
                       style={{
                         fontSize: "clamp(38px, 3.8vw, 62px)",
                         letterSpacing: "-0.035em",
@@ -230,22 +241,22 @@ export function Portfolio() {
                     </h3>
                   </div>
 
-                  {/* Status · Location */}
+                  {/* Status · Location — mask reveal */}
                   <div className="overflow-hidden mt-6">
-                    <p className="s-text body-lg font-sans text-gray-600">
+                    <p className="s-reveal body-lg font-sans text-gray-600">
                       {property.location}
                     </p>
                   </div>
 
-                  {/* Description */}
+                  {/* Description — mask reveal */}
                   <div className="overflow-hidden mt-3">
-                    <p className="s-text body-md font-sans text-gray-600 max-w-[400px]">
+                    <p className="s-reveal body-md font-sans text-gray-600 max-w-[400px]">
                       {property.description}
                     </p>
                   </div>
 
-                  {/* CTA row */}
-                  <div className="s-text flex items-center gap-6 mt-10">
+                  {/* CTA row — opacity fade (no clip mask needed) */}
+                  <div className="s-fade flex items-center gap-6 mt-10">
                     <PillButton href="/portfolio">View project</PillButton>
                     <TextButton href="/portfolio">All projects</TextButton>
                   </div>
