@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors */
+  --color-canvas: #FAF9F8;
+  --color-ink: #0A0A0A;
+  --color-ink-muted: #1C1C1C;
+  --color-gray-900: #2B2B2B;
+  --color-gray-600: #6B6B6B;
+  --color-gray-400: #A8A5A2;
+  --color-gray-200: #E8E5E2;
+  --color-gray-100: #F0EDEA;
+  --color-paper: #FFFFFF;
+
+  /* Fonts — Inter only */
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #FAF9F8;
+  color: #0A0A0A;
+}
+
+/* Custom cursor */
+#lotus-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #0A0A0A;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+/* Focus visible — keyboard nav ring */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* Nav scrolled state — backdrop blur and border */
+.nav-scrolled {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #E8E5E2;
+  background-color: rgba(250, 249, 248, 0.92) !important;
+}
+
+
+@layer utilities {
+  /* ─── Display scale ─────────────────────────────── */
+  .display-2xl {
+    font-size: 180px;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .display-xl {
+    font-size: 140px;
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+  }
+  .display-lg {
+    font-size: 96px;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+  }
+  .display-md {
+    font-size: 64px;
+    line-height: 1.0625;
+    letter-spacing: -0.025em;
+  }
+  /* ─── Heading scale ─────────────────────────────── */
+  .heading-lg {
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: -0.01em;
+  }
+  .heading-md {
+    font-size: 26px;
+    line-height: 34px;
+    letter-spacing: -0.01em;
+  }
+  .heading-sm {
+    font-size: 18px;
+    line-height: 26px;
+    letter-spacing: 0;
+  }
+  /* ─── Body scale ────────────────────────────────── */
+  .body-lg {
+    font-size: 17px;
+    line-height: 28px;
+  }
+  .body-md {
+    font-size: 15px;
+    line-height: 24px;
+  }
+  .body-sm {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  .caption {
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+  }
+  /* ─── Scrollbar ─────────────────────────────────── */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
