@@ -73,14 +73,14 @@ function AccordionItem({
     <div className="border-b border-gray-200">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-7 text-left group"
+        className="w-full flex items-start justify-between py-6 max-[640px]:py-5 text-left group gap-4"
         aria-expanded={isOpen}
         aria-controls={bodyId}
       >
-        <span className="heading-sm font-sans font-light text-ink pr-8 group-hover:text-gray-600 transition-colors duration-200">
+        <span className="heading-sm font-sans font-light text-ink group-hover:text-gray-600 transition-colors duration-200">
           {question}
         </span>
-        <span className="flex-shrink-0 text-gray-400" aria-hidden="true">
+        <span className="flex-shrink-0 text-gray-400 mt-[3px]" aria-hidden="true">
           <svg ref={iconRef} width="18" height="18" viewBox="0 0 18 18" fill="none">
             <line x1="9" y1="1" x2="9" y2="17" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
             <line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />

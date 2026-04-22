@@ -9,7 +9,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Disable Lenis on touch/mobile — native scroll is smoother and avoids
+    // conflicts with the mobile navigation overlay.
+    const isTouch = window.matchMedia("(hover: none)").matches;
+    if (prefersReduced || isTouch) return;
 
     const lenis = new Lenis({
       duration: 1.1,

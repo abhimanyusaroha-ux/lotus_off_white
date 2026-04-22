@@ -26,17 +26,21 @@ export function Navigation() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  // Refs for nav link underline spans (indexed by link)
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-  // ── Mount animation ──────────────────────────────────────────────
+  // ── Initialise overlay via GSAP on mount — no conflicting inline transform ──
+  useEffect(() => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    gsap.set(overlay, { yPercent: -100, display: "none" });
+  }, []);
+
+  // ── Header mount animation ────────────────────────────────────────
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
-
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const links = linkRefs.current.filter(Boolean) as HTMLAnchorElement[];
     const cta = ctaRef.current;
@@ -56,27 +60,17 @@ export function Navigation() {
       tl.to(cta, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, "-=0.15");
   }, []);
 
-  // ── Scroll shrink + backdrop ─────────────────────────────────────
+  // ── Scroll shrink + backdrop ──────────────────────────────────────
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
-
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const onScroll = () => {
       const past = window.scrollY > 80;
-      if (past) {
-        header.classList.add("nav-scrolled");
-      } else {
-        header.classList.remove("nav-scrolled");
-      }
+      header.classList.toggle("nav-scrolled", past);
       if (!prefersReduced) {
-        gsap.to(header, {
-          height: past ? 60 : 72,
-          duration: 0.4,
-          ease: "expo.out",
-          overwrite: true,
-        });
+        gsap.to(header, { height: past ? 60 : 72, duration: 0.4, ease: "expo.out", overwrite: true });
       }
     };
 
@@ -84,7 +78,7 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ── Nav link hover underlines ────────────────────────────────────
+  // ── Nav link hover underlines ─────────────────────────────────────
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const cleanups: (() => void)[] = [];
@@ -93,29 +87,14 @@ export function Navigation() {
       const line = lineRefs.current[i];
       if (!link || !line) return;
 
-      // Active links always show underline
       const isActive = link.getAttribute("data-active") === "true";
       gsap.set(line, { scaleX: isActive ? 1 : 0, transformOrigin: "left" });
-
       if (prefersReduced || isActive) return;
 
       const onEnter = () =>
-        gsap.to(line, {
-          scaleX: 1,
-          transformOrigin: "left",
-          duration: 0.3,
-          ease: "power2.out",
-          overwrite: true,
-        });
-
+        gsap.to(line, { scaleX: 1, transformOrigin: "left", duration: 0.3, ease: "power2.out", overwrite: true });
       const onLeave = () =>
-        gsap.to(line, {
-          scaleX: 0,
-          transformOrigin: "right",
-          duration: 0.3,
-          ease: "power2.out",
-          overwrite: true,
-        });
+        gsap.to(line, { scaleX: 0, transformOrigin: "right", duration: 0.3, ease: "power2.out", overwrite: true });
 
       link.addEventListener("mouseenter", onEnter);
       link.addEventListener("mouseleave", onLeave);
@@ -128,38 +107,43 @@ export function Navigation() {
     return () => cleanups.forEach((fn) => fn());
   }, [pathname]);
 
-  // ── Mobile overlay (GSAP, no Framer Motion) ──────────────────────
-  useEffect(() => {
+  // ── Open / close overlay ──────────────────────────────────────────
+  const openMenu = () => {
     const overlay = overlayRef.current;
     if (!overlay) return;
+    setMenuOpen(true);
+    document.body.style.overflow = "hidden";
+    gsap.set(overlay, { display: "flex", yPercent: -100 });
+    gsap.to(overlay, { yPercent: 0, duration: 0.5, ease: "expo.out" });
 
-    if (menuOpen) {
-      gsap.set(overlay, { display: "flex", y: "-100%" });
-      gsap.to(overlay, { y: "0%", duration: 0.5, ease: "expo.out" });
-
-      const items = overlay.querySelectorAll<HTMLElement>(".mobile-nav-item");
-      if (items.length) {
-        gsap.fromTo(
-          Array.from(items),
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, stagger: 0.06, duration: 0.45, ease: "power2.out", delay: 0.15 }
-        );
-      }
-    } else {
-      gsap.to(overlay, {
-        y: "-100%",
-        duration: 0.4,
-        ease: "expo.in",
-        onComplete: () => gsap.set(overlay, { display: "none" }),
-      });
+    const items = overlay.querySelectorAll<HTMLElement>(".mobile-nav-item");
+    if (items.length) {
+      gsap.fromTo(
+        Array.from(items),
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, stagger: 0.06, duration: 0.4, ease: "power2.out", delay: 0.15 }
+      );
     }
-  }, [menuOpen]);
+  };
 
+  const closeMenu = () => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    setMenuOpen(false);
+    document.body.style.overflow = "";
+    gsap.to(overlay, {
+      yPercent: -100,
+      duration: 0.4,
+      ease: "expo.in",
+      onComplete: () => gsap.set(overlay, { display: "none" }),
+    });
+  };
+
+  // Close on route change (back button etc.)
   useEffect(() => {
-    if (menuOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
+    closeMenu();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <>
@@ -171,11 +155,7 @@ export function Navigation() {
         <div className="h-full max-w-[1440px] mx-auto px-[120px] flex items-center justify-between max-[1024px]:px-12 max-[640px]:px-6">
 
           {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 flex-shrink-0"
-            aria-label="Lotus Property Group"
-          >
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0" aria-label="Lotus Property Group">
             <div ref={logoRef} className="flex items-center gap-3">
               <LotusLogoMark size={26} className="text-ink" />
               <div className="flex flex-col gap-0">
@@ -223,28 +203,32 @@ export function Navigation() {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden flex flex-col gap-[5px] p-2 -mr-2"
-            onClick={() => setMenuOpen(true)}
+            className="lg:hidden p-3 -mr-3"
+            style={{ touchAction: "manipulation" }}
+            onClick={openMenu}
             aria-label="Open navigation menu"
+            aria-expanded={menuOpen}
           >
-            <span className="block w-5 h-px bg-ink" />
-            <span className="block w-5 h-px bg-ink" />
+            <span className="flex flex-col gap-[5px]" aria-hidden="true">
+              <span className="block w-5 h-px bg-ink" />
+              <span className="block w-5 h-px bg-ink" />
+            </span>
           </button>
         </div>
       </header>
 
-      {/* Mobile overlay — always in DOM, GSAP controls display/transform */}
+      {/* Mobile overlay — GSAP owns display and yPercent from mount */}
       <div
         ref={overlayRef}
         className="fixed inset-0 z-[100] bg-canvas flex-col"
-        style={{ display: "none", transform: "translateY(-100%)" }}
+        style={{ display: "none" }}
+        aria-modal="true"
+        role="dialog"
+        aria-label="Navigation menu"
       >
-        <div className="flex justify-between items-center h-[72px] px-6 border-b border-gray-200">
-          <Link
-            href="/"
-            className="flex items-center gap-3"
-            onClick={() => setMenuOpen(false)}
-          >
+        {/* Top bar */}
+        <div className="flex justify-between items-center h-[72px] px-6 border-b border-gray-200 flex-shrink-0">
+          <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
             <LotusLogoMark size={24} className="text-ink" />
             <div className="flex flex-col gap-0">
               <span className="font-sans text-[10px] font-medium uppercase tracking-[0.14em] text-ink leading-[13px]">Lotus</span>
@@ -252,24 +236,26 @@ export function Navigation() {
             </div>
           </Link>
           <button
-            onClick={() => setMenuOpen(false)}
-            className="p-2 -mr-2"
+            onClick={closeMenu}
+            className="p-3 -mr-3"
+            style={{ touchAction: "manipulation" }}
             aria-label="Close navigation menu"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <line x1="4" y1="4" x2="16" y2="16" stroke="#0A0A0A" strokeWidth="1" strokeLinecap="round" />
-              <line x1="16" y1="4" x2="4" y2="16" stroke="#0A0A0A" strokeWidth="1" strokeLinecap="round" />
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <line x1="4" y1="4" x2="16" y2="16" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="16" y1="4" x2="4" y2="16" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
         </div>
 
-        <nav className="flex-1 px-10 pt-10 flex flex-col" aria-label="Mobile navigation">
+        {/* Links */}
+        <nav className="flex-1 px-6 pt-8 flex flex-col overflow-y-auto" aria-label="Mobile navigation">
           {navLinks.map((link) => (
             <div key={link.href} className="mobile-nav-item">
               <Link
                 href={link.href}
-                className="display-md font-sans font-bold text-ink block py-4 border-b border-gray-100"
-                onClick={() => setMenuOpen(false)}
+                className="display-md font-sans font-bold text-ink block py-4 border-b border-gray-100 active:opacity-60 transition-opacity"
+                onClick={closeMenu}
               >
                 {link.label}
               </Link>
@@ -277,8 +263,9 @@ export function Navigation() {
           ))}
         </nav>
 
-        <div className="px-10 pb-10">
-          <PillButton href="/contact" onClick={() => setMenuOpen(false)}>
+        {/* CTA */}
+        <div className="px-6 py-10 flex-shrink-0">
+          <PillButton href="/contact" onClick={closeMenu}>
             Contact us
           </PillButton>
         </div>

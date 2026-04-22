@@ -34,7 +34,7 @@ const linkColumns = [
 
 export function Footer() {
   return (
-    <footer className="pt-[160px] pb-20 max-[640px]:pt-24 max-[640px]:pb-14 border-t border-gray-200">
+    <footer className="pt-[160px] pb-20 max-[640px]:pt-24 border-t border-gray-200" style={{ paddingBottom: "max(3.5rem, env(safe-area-inset-bottom))" }}>
       <div className="max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6">
 
         {/* Large wordmark */}
@@ -50,7 +50,7 @@ export function Footer() {
         </div>
 
         {/* Link columns */}
-        <div className="mt-16 grid grid-cols-3 gap-x-8 gap-y-10 max-[640px]:grid-cols-2">
+        <div className="mt-16 grid grid-cols-3 gap-x-8 gap-y-10 max-[640px]:grid-cols-1">
           {linkColumns.map((col) => (
             <div key={col.heading}>
               <p className="caption font-sans text-gray-400 uppercase tracking-[0.1em] mb-5">
@@ -77,8 +77,8 @@ export function Footer() {
 
         {/* Bottom strip */}
         <div className="mt-8 flex items-center justify-between gap-6 max-[640px]:flex-col max-[640px]:items-start">
-          <div className="flex items-center gap-4">
-            <LotusLogoMark size={16} className="text-gray-400" />
+          <div className="flex items-start gap-3">
+            <LotusLogoMark size={16} className="text-gray-400 flex-shrink-0 mt-[2px]" />
             <p className="body-sm font-sans text-gray-400">
               © 2026 Lotus Property Group LLC · Real Estate Investment Firm · Chicago, IL
             </p>

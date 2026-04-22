@@ -46,7 +46,7 @@ export function Investors() {
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
     >
-      <div className="grid grid-cols-2 gap-20 max-[1024px]:grid-cols-1 max-[1024px]:gap-14">
+      <div className="grid grid-cols-2 gap-20 max-[1024px]:grid-cols-1 max-[1024px]:gap-12 max-[640px]:gap-10">
         {/* Left */}
         <motion.div
           variants={fadeUp}

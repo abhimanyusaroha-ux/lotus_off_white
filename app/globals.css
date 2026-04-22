@@ -55,31 +55,31 @@ body {
 
 
 @layer utilities {
-  /* ─── Display scale ─────────────────────────────── */
+  /* ─── Display scale — fluid via clamp() ─────────── */
   .display-2xl {
-    font-size: 180px;
+    font-size: clamp(80px, 15vw, 180px);
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
   .display-xl {
-    font-size: 140px;
+    font-size: clamp(64px, 12vw, 140px);
     line-height: 0.9;
     letter-spacing: -0.035em;
   }
   .display-lg {
-    font-size: 96px;
+    font-size: clamp(44px, 9vw, 96px);
     line-height: 0.92;
     letter-spacing: -0.03em;
   }
   .display-md {
-    font-size: 64px;
+    font-size: clamp(36px, 6.5vw, 64px);
     line-height: 1.0625;
     letter-spacing: -0.025em;
   }
   /* ─── Heading scale ─────────────────────────────── */
   .heading-lg {
-    font-size: 36px;
-    line-height: 44px;
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.22;
     letter-spacing: -0.01em;
   }
   .heading-md {

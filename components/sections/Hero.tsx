@@ -74,7 +74,7 @@ export function Hero() {
         </p>
 
         {/* Body copy row — line-reveal on scroll (delay 0.6s after mount) */}
-        <div className="mt-8 flex gap-20 max-[768px]:flex-col max-[768px]:gap-5">
+        <div className="mt-8 flex gap-20 max-[768px]:flex-col max-[768px]:gap-4">
           <LineReveal
             as="p"
             className="body-lg font-sans text-gray-600 max-w-[340px]"
@@ -99,11 +99,11 @@ export function Hero() {
           </LineReveal>
         </div>
 
-        {/* 16:9 hero image — clip-path + scale reveal */}
+        {/* Hero image — 16:9 desktop, 4:3 mobile */}
         <div
           ref={imageRef}
-          className="mt-10 relative w-full overflow-hidden"
-          style={{ aspectRatio: "16/9", transformOrigin: "center" }}
+          className="mt-10 relative w-full overflow-hidden aspect-video max-[640px]:aspect-[4/3]"
+          style={{ transformOrigin: "center" }}
         >
           <Image
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=2400&q=80"

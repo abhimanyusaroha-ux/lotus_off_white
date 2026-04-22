@@ -67,38 +67,34 @@ export function Portfolio() {
         const slideTextGroups = slideTextGroupRefs.current.filter(Boolean) as HTMLDivElement[];
         const n = properties.length;
 
-        // ── Initial states ─────────────────────────────────────────
-        gsap.set(slideImgs[0], { clipPath: "inset(0 0% 0 0)" });
-        gsap.set(slideImgs.slice(1), { clipPath: "inset(0 0 0 100%)" });
-
-        // Slide 0: text fully visible
-        const slide0Reveals = slideTextGroups[0]?.querySelectorAll<HTMLElement>(".s-reveal") ?? [];
-        const slide0Fades = slideTextGroups[0]?.querySelectorAll<HTMLElement>(".s-fade") ?? [];
-        gsap.set(Array.from(slide0Reveals), { yPercent: 0, opacity: 1 });
-        gsap.set(Array.from(slide0Fades), { opacity: 1 });
-
-        // Slides 1–3: text hidden
-        slideTextGroups.slice(1).forEach((group) => {
-          gsap.set(Array.from(group.querySelectorAll<HTMLElement>(".s-reveal")), {
-            yPercent: 110, opacity: 0,
-          });
-          gsap.set(Array.from(group.querySelectorAll<HTMLElement>(".s-fade")), {
-            opacity: 0,
-          });
+        // ── Z-index: slide 0 on top, each slide underneath the previous ──
+        // Only the outgoing image gets its clip collapsed — the incoming sits
+        // fully visible beneath it, so there is no second clip edge to misalign.
+        slideImgs.forEach((img, i) => {
+          const row = img.parentElement as HTMLElement | null;
+          if (row) {
+            row.style.zIndex = String(n - i);
+            row.style.pointerEvents = i === 0 ? "auto" : "none";
+          }
+          gsap.set(img, { clipPath: "inset(0 0% 0 0)" });
         });
 
-        // ── Text helpers — run at fixed speed, decoupled from scroll ──
+        // ── Initial text states ────────────────────────────────────────
+        gsap.set(Array.from(slideTextGroups[0]?.querySelectorAll<HTMLElement>(".s-reveal") ?? []), { yPercent: 0, opacity: 1 });
+        gsap.set(Array.from(slideTextGroups[0]?.querySelectorAll<HTMLElement>(".s-fade") ?? []), { opacity: 1 });
+        slideTextGroups.slice(1).forEach((group) => {
+          gsap.set(Array.from(group.querySelectorAll<HTMLElement>(".s-reveal")), { yPercent: 110, opacity: 0 });
+          gsap.set(Array.from(group.querySelectorAll<HTMLElement>(".s-fade")), { opacity: 0 });
+        });
+
+        // ── Text helpers — fixed-speed, decoupled from scroll ──────────
         let activeSlide = 0;
 
         const textExit = (idx: number) => {
           const group = slideTextGroups[idx];
           if (!group) return;
           gsap.to(Array.from(group.querySelectorAll<HTMLElement>(".s-reveal, .s-fade")), {
-            opacity: 0,
-            y: -14,
-            duration: 0.22,
-            ease: "power3.in",
-            overwrite: true,
+            opacity: 0, y: -14, duration: 0.22, ease: "power3.in", overwrite: true,
           });
         };
 
@@ -113,9 +109,7 @@ export function Portfolio() {
           gsap.to(fades, { opacity: 1, duration: 0.5, delay: 0.3, ease: "power2.out", overwrite: true });
         };
 
-        // ── Scrub timeline: scroll directly controls the curtain position ──
-        // ease: "none" on both tweens keeps outgoing right-edge and incoming
-        // left-edge at the same x coordinate throughout the transition.
+        // ── Scrub timeline: only the outgoing slide collapses ──────────
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sliderSectionRef.current,
@@ -130,35 +124,36 @@ export function Portfolio() {
             onUpdate(self) {
               const rawSlide = self.progress * (n - 1);
               const nearest = Math.min(Math.round(rawSlide), n - 1);
+
               if (nearest !== activeSlide) {
                 textExit(activeSlide);
                 textEnter(nearest);
+                // Give pointer events to active slide row only
+                slideImgs.forEach((img, i) => {
+                  const row = img.parentElement as HTMLElement | null;
+                  if (row) row.style.pointerEvents = i === nearest ? "auto" : "none";
+                });
                 activeSlide = nearest;
               }
+
               if (counterRef.current) {
                 counterRef.current.textContent = String(nearest + 1).padStart(2, "0");
               }
+
               progressFillRefs.current.forEach((fill, i) => {
                 if (!fill) return;
-                fill.style.width = `${Math.max(0, Math.min(1, rawSlide - i)) * 100}%`;
+                fill.style.height = `${Math.max(0, Math.min(1, rawSlide - i)) * 100}%`;
               });
             },
           },
         });
 
+        // Each outgoing slide's right inset collapses to 100%, revealing the
+        // slide beneath — no incoming clip, no boundary gap.
         for (let i = 0; i < n - 1; i++) {
-          // Outgoing: right edge collapses leftward (right inset 0% → 100%)
           tl.to(
             slideImgs[i],
             { clipPath: "inset(0 100% 0 0)", duration: 1, ease: "none" },
-            i
-          );
-          // Incoming: left edge opens rightward (left inset 100% → 0%)
-          // Shared boundary: both edges travel at identical speed — no gap, no overlap
-          tl.fromTo(
-            slideImgs[i + 1],
-            { clipPath: "inset(0 0 0 100%)" },
-            { clipPath: "inset(0 0% 0 0)", duration: 1, ease: "none" },
             i
           );
         }
@@ -202,11 +197,11 @@ export function Portfolio() {
         style={{ height: "500vh" }}
       >
         <div className="sticky top-0 h-screen overflow-hidden bg-canvas">
-          {/* All 4 slides stacked absolutely; clip-path controls which is visible */}
+          {/* Slides stacked; z-index set by JS; only outgoing is clip-animated */}
           {properties.map((property, i) => (
             <div key={property.id} className="absolute inset-0 grid grid-cols-2">
 
-              {/* Left: full-bleed image, clip-path animated by standalone GSAP tweens */}
+              {/* Left: image — clip-path collapses outgoing, incoming sits beneath */}
               <div
                 ref={(el) => { slideImgRefs.current[i] = el; }}
                 className="relative h-full overflow-hidden"
@@ -221,41 +216,26 @@ export function Portfolio() {
                 />
               </div>
 
-              {/* Right: text, animated independently at LineReveal speed */}
+              {/* Right: text, animated at LineReveal speed */}
               <div className="flex items-center px-[80px] h-full overflow-hidden">
                 <div
                   ref={(el) => { slideTextGroupRefs.current[i] = el; }}
                   className="w-full max-w-[520px]"
                 >
-                  {/* Property name — mask reveal */}
                   <div className="overflow-hidden">
                     <h3
                       className="s-reveal font-sans font-bold text-ink"
-                      style={{
-                        fontSize: "clamp(38px, 3.8vw, 62px)",
-                        letterSpacing: "-0.035em",
-                        lineHeight: 1.0,
-                      }}
+                      style={{ fontSize: "clamp(38px, 3.8vw, 62px)", letterSpacing: "-0.035em", lineHeight: 1.0 }}
                     >
                       {property.name}
                     </h3>
                   </div>
-
-                  {/* Status · Location — mask reveal */}
                   <div className="overflow-hidden mt-6">
-                    <p className="s-reveal body-lg font-sans text-gray-600">
-                      {property.location}
-                    </p>
+                    <p className="s-reveal body-lg font-sans text-gray-600">{property.location}</p>
                   </div>
-
-                  {/* Description — mask reveal */}
                   <div className="overflow-hidden mt-3">
-                    <p className="s-reveal body-md font-sans text-gray-600 max-w-[400px]">
-                      {property.description}
-                    </p>
+                    <p className="s-reveal body-md font-sans text-gray-600 max-w-[400px]">{property.description}</p>
                   </div>
-
-                  {/* CTA row — opacity fade (no clip mask needed) */}
                   <div className="s-fade flex items-center gap-6 mt-10">
                     <PillButton href="/portfolio">View project</PillButton>
                     <TextButton href="/portfolio">All projects</TextButton>
@@ -277,14 +257,14 @@ export function Portfolio() {
             </span>
           </div>
 
-          {/* Bottom-center: 4-segment progress bar */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+          {/* Right-center: vertical 4-segment progress bar */}
+          <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-10 pointer-events-none">
             {properties.map((_, i) => (
-              <div key={i} className="w-16 h-[2px] bg-gray-200 overflow-hidden">
+              <div key={i} className="h-14 w-[2px] bg-gray-200 overflow-hidden flex flex-col">
                 <div
                   ref={(el) => { progressFillRefs.current[i] = el; }}
-                  className="h-full bg-ink"
-                  style={{ width: "0%" }}
+                  className="w-full bg-ink"
+                  style={{ height: "0%" }}
                 />
               </div>
             ))}
