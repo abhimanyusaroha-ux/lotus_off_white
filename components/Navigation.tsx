@@ -52,7 +52,7 @@ export function Navigation() {
     if (cta) gsap.set(cta, { opacity: 0, y: -8 });
 
     const tl = gsap.timeline({ delay: 0.1 });
-    tl.to(header, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" });
+    tl.to(header, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
     if (logo) tl.to(logo, { opacity: 1, duration: 0.5 }, "-=0.5");
     if (links.length)
       tl.to(links, { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, "-=0.4");
@@ -70,7 +70,7 @@ export function Navigation() {
       const past = window.scrollY > 80;
       header.classList.toggle("nav-scrolled", past);
       if (!prefersReduced) {
-        gsap.to(header, { height: past ? 60 : 72, duration: 0.4, ease: "expo.out", overwrite: true });
+        gsap.to(header, { height: past ? 60 : 72, duration: 0.4, ease: "power3.out", overwrite: true });
       }
     };
 
@@ -114,7 +114,7 @@ export function Navigation() {
     setMenuOpen(true);
     document.body.style.overflow = "hidden";
     gsap.set(overlay, { display: "flex", yPercent: -100 });
-    gsap.to(overlay, { yPercent: 0, duration: 0.5, ease: "expo.out" });
+    gsap.to(overlay, { yPercent: 0, duration: 0.5, ease: "power3.out" });
 
     const items = overlay.querySelectorAll<HTMLElement>(".mobile-nav-item");
     if (items.length) {
@@ -134,7 +134,7 @@ export function Navigation() {
     gsap.to(overlay, {
       yPercent: -100,
       duration: 0.4,
-      ease: "expo.in",
+      ease: "power3.in",
       onComplete: () => gsap.set(overlay, { display: "none" }),
     });
   };
@@ -157,12 +157,12 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0" aria-label="Lotus Property Group">
             <div ref={logoRef} className="flex items-center gap-3">
-              <LotusLogoMark size={26} className="text-ink" />
+              <LotusLogoMark size={26} className="text-interactive" />
               <div className="flex flex-col gap-0">
-                <span className="font-sans text-[10px] font-medium uppercase tracking-[0.14em] text-ink leading-[14px]">
+                <span className="font-serif font-light italic text-[15px] text-ink leading-[16px]">
                   Lotus
                 </span>
-                <span className="font-sans text-[10px] font-medium uppercase tracking-[0.14em] text-gray-600 leading-[14px]">
+                <span className="font-serif font-light italic text-[15px] text-gray-600 leading-[16px]">
                   Property Group
                 </span>
               </div>
@@ -180,8 +180,8 @@ export function Navigation() {
                   href={link.href}
                   data-active={isActive ? "true" : "false"}
                   className={[
-                    "relative font-sans text-[11px] uppercase tracking-[0.1em] transition-colors duration-200",
-                    isActive ? "text-ink" : "text-gray-600 hover:text-ink",
+                    "relative font-sans text-[11px] uppercase tracking-[0.12em] transition-colors duration-200",
+                    isActive ? "text-interactive" : "text-gray-600 hover:text-interactive",
                   ].join(" ")}
                 >
                   {link.label}
@@ -210,8 +210,8 @@ export function Navigation() {
             aria-expanded={menuOpen}
           >
             <span className="flex flex-col gap-[5px]" aria-hidden="true">
-              <span className="block w-5 h-px bg-ink" />
-              <span className="block w-5 h-px bg-ink" />
+              <span className="block w-5 h-px bg-interactive" />
+              <span className="block w-5 h-px bg-interactive" />
             </span>
           </button>
         </div>
@@ -229,10 +229,10 @@ export function Navigation() {
         {/* Top bar */}
         <div className="flex justify-between items-center h-[72px] px-6 border-b border-gray-200 flex-shrink-0">
           <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
-            <LotusLogoMark size={24} className="text-ink" />
+            <LotusLogoMark size={24} className="text-interactive" />
             <div className="flex flex-col gap-0">
-              <span className="font-sans text-[10px] font-medium uppercase tracking-[0.14em] text-ink leading-[13px]">Lotus</span>
-              <span className="font-sans text-[10px] font-medium uppercase tracking-[0.14em] text-gray-600 leading-[13px]">Property Group</span>
+              <span className="font-serif font-light italic text-[14px] text-ink leading-[15px]">Lotus</span>
+              <span className="font-serif font-light italic text-[14px] text-gray-600 leading-[15px]">Property Group</span>
             </div>
           </Link>
           <button
@@ -254,7 +254,7 @@ export function Navigation() {
             <div key={link.href} className="mobile-nav-item">
               <Link
                 href={link.href}
-                className="display-md font-sans font-bold text-ink block py-4 border-b border-gray-100 active:opacity-60 transition-opacity"
+                className="display-md font-serif font-light italic text-interactive block py-4 border-b-[0.5px] border-gray-100 active:opacity-60 transition-opacity"
                 onClick={closeMenu}
               >
                 {link.label}

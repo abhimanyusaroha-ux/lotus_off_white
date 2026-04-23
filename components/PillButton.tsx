@@ -9,6 +9,8 @@ interface PillButtonProps {
   children: React.ReactNode;
   size?: "default" | "hero";
   onClick?: () => void;
+  variant?: "primary" | "ghost";
+  showArrow?: boolean;
 }
 
 function useMagnetic(ref: React.RefObject<HTMLDivElement>) {
@@ -17,7 +19,7 @@ function useMagnetic(ref: React.RefObject<HTMLDivElement>) {
     if (!el || window.matchMedia("(hover: none)").matches) return;
 
     const RADIUS = 80;
-    const STRENGTH = 0.3;
+    const STRENGTH = 0.25;
     const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
 
@@ -49,27 +51,43 @@ function useMagnetic(ref: React.RefObject<HTMLDivElement>) {
 export function PillButton({
   href,
   children,
-  size = "default",
   onClick,
+  variant = "primary",
+  showArrow = true,
 }: PillButtonProps) {
   const wrapRef = useRef<HTMLDivElement>(null!);
   useMagnetic(wrapRef);
 
-  const classes = [
-    "inline-flex items-center justify-center rounded-full bg-ink text-canvas font-sans font-medium tracking-[0.02em] transition-colors duration-150",
-    size === "hero" ? "h-14 px-8 body-sm" : "h-12 px-8 body-sm",
-    "hover:bg-ink-muted",
-  ].join(" ");
+  const base =
+    "inline-flex items-center justify-center gap-[0.6em] border font-sans font-normal uppercase text-[11px] tracking-[0.12em] px-9 py-[18px] transition-colors duration-300";
+
+  const variantClasses =
+    variant === "primary"
+      ? "bg-interactive text-canvas border-interactive hover:bg-transparent hover:text-interactive"
+      : "bg-transparent text-interactive border-interactive hover:bg-interactive hover:text-canvas";
+
+  const classes = `${base} ${variantClasses}`;
+
+  const content = (
+    <>
+      {children}
+      {showArrow && (
+        <span aria-hidden="true" className="inline-block">
+          →
+        </span>
+      )}
+    </>
+  );
 
   return (
     <div ref={wrapRef} className="inline-block">
       {href ? (
         <Link href={href} className={classes}>
-          {children}
+          {content}
         </Link>
       ) : (
         <button onClick={onClick} className={classes}>
-          {children}
+          {content}
         </button>
       )}
     </div>

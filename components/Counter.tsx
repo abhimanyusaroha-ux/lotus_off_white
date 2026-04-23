@@ -21,14 +21,14 @@ export function Counter({
   duration = 2,
   className = "",
 }: CounterProps) {
-  const elRef = useRef<HTMLSpanElement>(null);
+  const numRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const el = elRef.current;
+    const el = numRef.current;
     if (!el) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.textContent = `${prefix}${target}${suffix}`;
+      el.textContent = String(target);
       return;
     }
 
@@ -40,7 +40,7 @@ export function Counter({
       ease: "power2.out",
       paused: true,
       onUpdate: () => {
-        el.textContent = `${prefix}${Math.round(obj.val)}${suffix}`;
+        el.textContent = String(Math.round(obj.val));
       },
     });
 
@@ -55,11 +55,25 @@ export function Counter({
       anim.kill();
       st.kill();
     };
-  }, [target, prefix, suffix, duration]);
+  }, [target, duration]);
 
   return (
-    <span ref={elRef} className={className}>
-      {prefix}0{suffix}
+    <span className={className}>
+      {prefix && <span>{prefix}</span>}
+      <span ref={numRef}>0</span>
+      {suffix && (
+        <span
+          className="font-serif font-normal italic"
+          style={{
+            fontSize: "0.4em",
+            verticalAlign: "0.55em",
+            marginLeft: "0.08em",
+            letterSpacing: "0",
+          }}
+        >
+          {suffix}
+        </span>
+      )}
     </span>
   );
 }

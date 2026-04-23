@@ -22,7 +22,7 @@ export default function LineReveal({
   as: Tag = "div",
   className = "",
   stagger = 0.1,
-  duration = 1.0,
+  duration = 1.2,
   delay = 0,
   trigger = "scroll",
   start = "top 85%",
@@ -123,7 +123,7 @@ export default function LineReveal({
     const tween = gsap.to(lineInners, {
       yPercent: 0,
       duration,
-      ease: "expo.out",
+      ease: "power3.out",
       stagger,
       delay,
       scrollTrigger:

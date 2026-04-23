@@ -70,7 +70,7 @@ function AccordionItem({
   }, [isOpen]);
 
   return (
-    <div className="border-b border-gray-200">
+    <div className="border-b-[0.5px] border-gray-200">
       <button
         onClick={onToggle}
         className="w-full flex items-start justify-between py-6 max-[640px]:py-5 text-left group gap-4"
@@ -80,7 +80,7 @@ function AccordionItem({
         <span className="heading-sm font-sans font-light text-ink group-hover:text-gray-600 transition-colors duration-200">
           {question}
         </span>
-        <span className="flex-shrink-0 text-gray-400 mt-[3px]" aria-hidden="true">
+        <span className="flex-shrink-0 text-interactive mt-[3px]" aria-hidden="true">
           <svg ref={iconRef} width="18" height="18" viewBox="0 0 18 18" fill="none">
             <line x1="9" y1="1" x2="9" y2="17" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
             <line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
@@ -89,7 +89,7 @@ function AccordionItem({
       </button>
 
       <div id={bodyId} ref={bodyRef} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
-        <p className="body-md font-sans text-gray-600 max-w-[600px] pb-7">
+        <p className="body-md font-sans font-light text-gray-600 max-w-[600px] pb-7">
           {answer}
         </p>
       </div>
@@ -127,24 +127,25 @@ export function FAQ() {
       id="faq"
       className="py-[160px] max-[640px]:py-24 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
     >
-      <SectionMarker number="05" label="Frequently Asked" />
+      <div className="grid grid-cols-12 gap-x-8 max-[1024px]:grid-cols-1 max-[1024px]:gap-y-12 items-start">
 
-      {/* Title row */}
-      <div className="mt-12 grid grid-cols-12 gap-x-8 max-[1024px]:grid-cols-1">
-        <LineReveal
-          as="h2"
-          className="col-span-8 max-[1024px]:col-span-1 display-md font-sans font-bold text-ink"
-          stagger={0.08}
-          duration={1.0}
-        >
-          The questions we hear most.
-        </LineReveal>
-        <div className="col-start-9 col-span-4 max-[1024px]:col-start-1 max-[1024px]:col-span-1 max-[1024px]:mt-8 pt-1">
+        {/* Left: sticky title column */}
+        <div className="col-span-4 max-[1024px]:col-span-1 lg:sticky lg:top-[120px]">
+          <SectionMarker number="05" label="Frequently Asked" />
+          <LineReveal
+            as="h2"
+            className="display-md font-serif font-light italic uppercase text-ink mt-8"
+            stagger={0.08}
+            duration={1.2}
+          >
+            The questions<br />
+            <span className="not-italic">we hear most.</span>
+          </LineReveal>
           <LineReveal
             as="p"
-            className="body-md font-sans text-gray-600 max-w-[340px]"
+            className="body-md font-sans font-light text-gray-600 max-w-[340px] mt-8"
             stagger={0.05}
-            duration={0.9}
+            duration={1.0}
           >
             Have a different question? Our team responds within one business day.
           </LineReveal>
@@ -152,11 +153,12 @@ export function FAQ() {
             <TextButton href="/contact">Write to us</TextButton>
           </div>
         </div>
-      </div>
 
-      {/* Accordion */}
-      <div ref={itemsRef} className="mt-20 max-[640px]:mt-14 grid grid-cols-12 max-[1024px]:grid-cols-1">
-        <div className="col-start-2 col-span-10 max-[1024px]:col-start-1 max-[1024px]:col-span-1 border-t border-gray-200">
+        {/* Right: scrolling accordion */}
+        <div
+          ref={itemsRef}
+          className="col-start-6 col-span-7 max-[1024px]:col-start-1 max-[1024px]:col-span-1 border-t-[0.5px] border-gray-200"
+        >
           {faqs.map((faq, i) => (
             <div key={i} className="faq-item">
               <AccordionItem
@@ -173,7 +175,7 @@ export function FAQ() {
 
       {/* Bottom CTA */}
       <div className="mt-28 max-[640px]:mt-16 flex flex-col items-center gap-5">
-        <p className="body-sm font-sans text-gray-400 uppercase tracking-[0.08em]">
+        <p className="font-sans text-[11px] text-gray-400 uppercase tracking-[0.12em]">
           Didn&apos;t find your answer?
         </p>
         <PillButton href="/contact">Contact our team</PillButton>

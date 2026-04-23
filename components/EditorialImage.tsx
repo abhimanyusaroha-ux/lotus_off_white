@@ -18,7 +18,7 @@ export function EditorialImage({
   return (
     <figure className="m-0">
       <div
-        className="relative w-full overflow-hidden"
+        className="editorial-img relative w-full overflow-hidden"
         style={{ aspectRatio }}
       >
         <Image
@@ -31,7 +31,7 @@ export function EditorialImage({
         />
       </div>
       {caption && (
-        <figcaption className="caption font-sans text-gray-600 mt-3">
+        <figcaption className="font-serif font-light italic text-[14px] text-gray-600 mt-3">
           {caption}
         </figcaption>
       )}

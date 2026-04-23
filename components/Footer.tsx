@@ -34,26 +34,17 @@ const linkColumns = [
 
 export function Footer() {
   return (
-    <footer className="pt-[160px] pb-20 max-[640px]:pt-24 border-t border-gray-200" style={{ paddingBottom: "max(3.5rem, env(safe-area-inset-bottom))" }}>
+    <footer
+      className="pt-[120px] pb-16 max-[640px]:pt-24"
+      style={{ paddingBottom: "max(3.5rem, env(safe-area-inset-bottom))" }}
+    >
       <div className="max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6">
 
-        {/* Large wordmark */}
-        <div className="grid grid-cols-12 max-[1024px]:grid-cols-1">
-          <LineReveal
-            as="h2"
-            className="col-span-10 max-[1024px]:col-span-1 display-lg font-sans font-bold text-ink"
-            stagger={0.08}
-            duration={1.1}
-          >
-            Lotus Property Group
-          </LineReveal>
-        </div>
-
-        {/* Link columns */}
-        <div className="mt-16 grid grid-cols-3 gap-x-8 gap-y-10 max-[640px]:grid-cols-1">
+        {/* Top — link columns in a single horizontal row */}
+        <div className="grid grid-cols-3 gap-x-8 gap-y-10 max-[640px]:grid-cols-1">
           {linkColumns.map((col) => (
             <div key={col.heading}>
-              <p className="caption font-sans text-gray-400 uppercase tracking-[0.1em] mb-5">
+              <p className="font-sans text-[11px] text-gray-400 uppercase tracking-[0.18em] mb-5">
                 {col.heading}
               </p>
               <ul className="space-y-[10px]">
@@ -61,7 +52,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="body-sm font-sans text-gray-600 hover:text-ink transition-colors duration-200"
+                      className="body-sm font-sans font-light text-gray-600 hover:text-interactive transition-colors duration-200"
                     >
                       {link.label}
                     </Link>
@@ -72,14 +63,12 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="mt-20 max-[640px]:mt-14 border-t border-gray-200" />
-
-        {/* Bottom strip */}
-        <div className="mt-8 flex items-center justify-between gap-6 max-[640px]:flex-col max-[640px]:items-start">
+        {/* Middle strip — hairlines above + below, copyright and socials on one row */}
+        <div className="mt-20 max-[640px]:mt-14 hairline" aria-hidden="true" />
+        <div className="flex items-center justify-between gap-6 py-6 max-[640px]:flex-col max-[640px]:items-start">
           <div className="flex items-start gap-3">
             <LotusLogoMark size={16} className="text-gray-400 flex-shrink-0 mt-[2px]" />
-            <p className="body-sm font-sans text-gray-400">
+            <p className="body-sm font-sans font-light text-gray-400">
               © 2026 Lotus Property Group LLC · Real Estate Investment Firm · Chicago, IL
             </p>
           </div>
@@ -89,7 +78,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="text-gray-400 hover:text-ink transition-colors duration-200"
+              className="text-gray-400 hover:text-interactive transition-colors duration-200"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <rect x="1.5" y="1.5" width="15" height="15" rx="4" stroke="currentColor" strokeWidth="1" />
@@ -102,7 +91,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="text-gray-400 hover:text-ink transition-colors duration-200"
+              className="text-gray-400 hover:text-interactive transition-colors duration-200"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" strokeWidth="1" />
@@ -112,6 +101,19 @@ export function Footer() {
               </svg>
             </a>
           </div>
+        </div>
+        <div className="hairline" aria-hidden="true" />
+
+        {/* Bottom — giant wordmark, left-aligned, last visible element */}
+        <div className="mt-16 max-[640px]:mt-12">
+          <LineReveal
+            as="h2"
+            className="display-xl font-serif font-light italic uppercase text-ink"
+            stagger={0.08}
+            duration={1.3}
+          >
+            Lotus <span className="not-italic">Property</span> Group
+          </LineReveal>
         </div>
       </div>
     </footer>
