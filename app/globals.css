@@ -91,26 +91,26 @@ body {
 
   /* ─── Display scale — fluid via clamp(), tuned for uppercase serif italic ─── */
   .display-2xl {
-    font-size: clamp(84px, 14vw, 220px);
-    line-height: 0.95;
+    font-size: clamp(60px, 10vw, 140px);
+    line-height: 0.98;
     letter-spacing: -0.03em;
   }
 
   .display-xl {
-    font-size: clamp(72px, 11vw, 160px);
-    line-height: 0.98;
+    font-size: clamp(48px, 7.5vw, 104px);
+    line-height: 1.0;
     letter-spacing: -0.025em;
   }
 
   .display-lg {
-    font-size: clamp(56px, 7vw, 104px);
-    line-height: 1.02;
+    font-size: clamp(40px, 5.5vw, 76px);
+    line-height: 1.04;
     letter-spacing: -0.02em;
   }
 
   .display-md {
-    font-size: clamp(40px, 5vw, 72px);
-    line-height: 1.05;
+    font-size: clamp(30px, 3.8vw, 52px);
+    line-height: 1.08;
     letter-spacing: -0.015em;
   }
 

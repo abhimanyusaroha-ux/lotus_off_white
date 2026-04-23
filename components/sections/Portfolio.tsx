@@ -158,24 +158,23 @@ export function Portfolio() {
   return (
     <section id="portfolio" ref={sectionRef}>
       {/* ── Intro ──────────────────────────────────────────────────── */}
-      <div className="pt-[160px] max-[640px]:pt-24 pb-14 max-[640px]:pb-10 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6">
+      <div className="pt-[120px] max-[640px]:pt-20 pb-12 max-[640px]:pb-8 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6">
         <SectionMarker number="02" label="Select Portfolio" />
         <div className="mt-8">
           <LineReveal
             as="h2"
-            className="display-md font-serif font-light italic uppercase text-ink max-w-[820px]"
+            className="display-md font-serif font-light italic uppercase text-ink"
             stagger={0.08}
             duration={1.2}
           >
-            The portfolio.<br />
-            <span className="not-italic">Each acquisition deliberate.</span>
+            Each one <span className="not-italic">deliberate.</span>
           </LineReveal>
         </div>
       </div>
 
       {/* ── Desktop: editorial index ───────────────────────────────── */}
-      <div className="hidden lg:block max-w-[1440px] mx-auto px-[120px] pb-[160px]">
-        <div className="mt-32 grid grid-cols-12 gap-x-8 items-stretch">
+      <div className="hidden lg:block max-w-[1440px] mx-auto px-[120px] pb-[120px]">
+        <div className="mt-20 grid grid-cols-12 gap-x-8 items-stretch">
           {/* Left: numbered list — grid-rows-4 distributes rows to match image height */}
           <div className="col-span-5 self-stretch border-t-[0.5px] border-gray-200 grid grid-rows-4">
             {properties.map((property, i) => {

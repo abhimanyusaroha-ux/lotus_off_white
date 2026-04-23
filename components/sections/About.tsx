@@ -41,7 +41,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="py-[160px] max-[640px]:py-24 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
+      className="py-[120px] max-[640px]:py-20 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
     >
       {/* Top row — heading left, section marker + body right */}
       <div className="grid grid-cols-12 gap-x-8 max-[1024px]:grid-cols-1">
@@ -51,8 +51,7 @@ export function About() {
           stagger={0.1}
           duration={1.3}
         >
-          Not speculation.<br />
-          <span className="not-italic">Conviction.</span>
+          Not noise. <span className="not-italic">Conviction.</span>
         </LineReveal>
 
         <div className="col-start-9 col-span-4 max-[1024px]:col-start-1 max-[1024px]:col-span-1 max-[1024px]:mt-10 flex flex-col">

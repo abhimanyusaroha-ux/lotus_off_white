@@ -125,7 +125,7 @@ export function FAQ() {
   return (
     <section
       id="faq"
-      className="py-[160px] max-[640px]:py-24 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
+      className="py-[120px] max-[640px]:py-20 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
     >
       <div className="grid grid-cols-12 gap-x-8 max-[1024px]:grid-cols-1 max-[1024px]:gap-y-12 items-start">
 
@@ -138,8 +138,7 @@ export function FAQ() {
             stagger={0.08}
             duration={1.2}
           >
-            The questions<br />
-            <span className="not-italic">we hear most.</span>
+            Questions, <span className="not-italic">answered.</span>
           </LineReveal>
           <LineReveal
             as="p"

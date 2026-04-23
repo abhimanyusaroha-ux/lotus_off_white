@@ -58,8 +58,8 @@ export function Hero() {
                 ref={wordmarkInnerRef}
                 className="font-serif font-light italic uppercase text-ink"
                 style={{
-                  fontSize: "clamp(72px, 13vw, 200px)",
-                  lineHeight: 0.9,
+                  fontSize: "clamp(56px, 9vw, 140px)",
+                  lineHeight: 0.95,
                   letterSpacing: "-0.04em",
                 }}
                 aria-label="Lotus"

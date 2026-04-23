@@ -43,7 +43,7 @@ export function Investors() {
     <motion.section
       id="investors"
       ref={ref}
-      className="py-[160px] max-[640px]:py-24 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
+      className="py-[120px] max-[640px]:py-20 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
     >
@@ -75,8 +75,7 @@ export function Investors() {
             stagger={0.08}
             duration={1.2}
           >
-            Selected opportunities,<br />
-            <span className="not-italic">offered to partners.</span>
+            For <span className="not-italic">partners.</span>
           </LineReveal>
           <LineReveal
             as="p"

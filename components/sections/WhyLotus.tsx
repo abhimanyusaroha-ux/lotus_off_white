@@ -28,7 +28,7 @@ export function WhyLotus() {
     <motion.section
       id="why"
       ref={ref}
-      className="py-[160px] max-[640px]:py-24 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
+      className="py-[120px] max-[640px]:py-20 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6"
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
     >
@@ -45,8 +45,7 @@ export function WhyLotus() {
             stagger={0.1}
             duration={1.3}
           >
-            Built on conviction.<br />
-            <span className="not-italic">Measured by returns.</span>
+            Built, <span className="not-italic">measured.</span>
           </LineReveal>
 
           <LineReveal
