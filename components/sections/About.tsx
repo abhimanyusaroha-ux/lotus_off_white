@@ -6,7 +6,6 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { SectionMarker } from "../SectionMarker";
 import { EditorialImage } from "../EditorialImage";
 import { TextButton } from "../TextButton";
-import { Counter } from "../Counter";
 import LineReveal from "../LineReveal";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -56,7 +55,7 @@ export function About() {
 
         <div className="col-start-9 col-span-4 max-[1024px]:col-start-1 max-[1024px]:col-span-1 max-[1024px]:mt-10 flex flex-col">
           <div className="flex lg:justify-end">
-            <SectionMarker number="01" label="About" />
+            <SectionMarker label="About" />
           </div>
           <LineReveal
             as="p"
@@ -109,34 +108,7 @@ export function About() {
         </div>
       </div>
 
-      {/* Stats — centered horizontal row, 0.5px vertical hairline between */}
-      <div className="mt-28 max-[640px]:mt-16 flex items-start justify-center gap-16 max-[640px]:gap-10">
-        <div className="min-w-0 text-center">
-          <div
-            className="font-serif font-light italic text-ink"
-            style={{ fontSize: "clamp(72px, 9vw, 120px)", letterSpacing: "-0.01em", lineHeight: 0.95 }}
-          >
-            <Counter target={4} />
-          </div>
-          <p className="font-sans text-[11px] uppercase tracking-[0.12em] text-gray-600 mt-4">
-            Projects completed
-          </p>
-        </div>
 
-        <div className="self-stretch w-px bg-gray-200" aria-hidden="true" />
-
-        <div className="min-w-0 text-center">
-          <div
-            className="font-serif font-light italic text-ink"
-            style={{ fontSize: "clamp(72px, 9vw, 120px)", letterSpacing: "-0.01em", lineHeight: 0.95 }}
-          >
-            <Counter target={5} />
-          </div>
-          <p className="font-sans text-[11px] uppercase tracking-[0.12em] text-gray-600 mt-4">
-            In pre-development
-          </p>
-        </div>
-      </div>
     </section>
   );
 }

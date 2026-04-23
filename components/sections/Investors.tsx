@@ -68,7 +68,7 @@ export function Investors() {
           variants={fadeUp}
           transition={{ duration: 0.6, delay: 0.12, ease: [0.4, 0, 0.2, 1] }}
         >
-          <SectionMarker number="04" label="For Investors" />
+          <SectionMarker label="For Investors" />
           <LineReveal
             as="h2"
             className="display-md font-serif font-light italic uppercase text-ink mt-8"

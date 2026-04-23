@@ -48,7 +48,7 @@ export function Hero() {
         {/* Left column — marker top, centered stack middle, scroll indicator bottom */}
         <div className="flex flex-col px-[120px] py-10 max-[1024px]:px-12 max-[640px]:px-6 lg:h-full">
           <div>
-            <SectionMarker number="01" label="Home" />
+            <SectionMarker label="Home" />
           </div>
 
           <div className="lg:flex-1 flex flex-col lg:justify-center mt-10 lg:mt-0">

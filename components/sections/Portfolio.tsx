@@ -159,7 +159,7 @@ export function Portfolio() {
     <section id="portfolio" ref={sectionRef}>
       {/* ── Intro ──────────────────────────────────────────────────── */}
       <div className="pt-[120px] max-[640px]:pt-20 pb-12 max-[640px]:pb-8 max-w-[1440px] mx-auto px-[120px] max-[1024px]:px-12 max-[640px]:px-6">
-        <SectionMarker number="02" label="Select Portfolio" />
+        <SectionMarker label="Select Portfolio" />
         <div className="mt-8">
           <LineReveal
             as="h2"

@@ -131,7 +131,7 @@ export function FAQ() {
 
         {/* Left: sticky title column */}
         <div className="col-span-4 max-[1024px]:col-span-1 lg:sticky lg:top-[120px]">
-          <SectionMarker number="05" label="Frequently Asked" />
+          <SectionMarker label="Frequently Asked" />
           <LineReveal
             as="h2"
             className="display-md font-serif font-light italic uppercase text-ink mt-8"
@@ -140,17 +140,6 @@ export function FAQ() {
           >
             Questions, <span className="not-italic">answered.</span>
           </LineReveal>
-          <LineReveal
-            as="p"
-            className="body-md font-sans font-light text-gray-600 max-w-[340px] mt-8"
-            stagger={0.05}
-            duration={1.0}
-          >
-            Have a different question? Our team responds within one business day.
-          </LineReveal>
-          <div className="mt-5">
-            <TextButton href="/contact">Write to us</TextButton>
-          </div>
         </div>
 
         {/* Right: scrolling accordion */}
@@ -175,7 +164,7 @@ export function FAQ() {
       {/* Bottom CTA */}
       <div className="mt-28 max-[640px]:mt-16 flex flex-col items-center gap-5">
         <p className="font-sans text-[11px] text-gray-400 uppercase tracking-[0.12em]">
-          Didn&apos;t find your answer?
+          Have a different question? Our team responds within one business day.
         </p>
         <PillButton href="/contact">Contact our team</PillButton>
       </div>

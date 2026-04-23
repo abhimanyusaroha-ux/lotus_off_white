@@ -37,7 +37,7 @@ export function WhyLotus() {
 
         {/* Left column — marker, heading, paragraph, text link */}
         <motion.div variants={fadeUp} transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}>
-          <SectionMarker number="03" label="Why Lotus" />
+          <SectionMarker label="Why Lotus" />
 
           <LineReveal
             as="h2"
